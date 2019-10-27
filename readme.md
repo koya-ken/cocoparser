@@ -6,17 +6,24 @@ conda install -c conda-forge rapidjson
 conda install -c anaconda msgpack-python
 ```
 
-## analyze.py
+## analyze_plot.py
 
 ```
 python .\analyze_plot.py .\person_keypoints_val2017.msgpack
 ```
 
-## analyze2.py
+## analyze_single.py
 
 ```
 python .\analyze_single.py .\person_keypoints_val2017.msgpack
 ```
+
+## analyze_diff.py
+
+```
+python .\analyze_diff.py .\tmp\val_image_100.json .\tmp\merged.json 
+```
+
 
 ## filter_imagecount.py
 
