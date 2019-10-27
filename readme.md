@@ -56,6 +56,10 @@ python .\merge.py .\tmp\val_image_100.json .\tmp\val_image_200.json -o .\tmp\mer
 python .\filter.py .\tmp\merged.json -f 'num_keypoints > 15' -o .\tmp\over_keypoints_15.json
 ```
 
+```
+python .\filter.py .\person_keypoints_val2017.json -f 'annotation_count < 5, width > 200 , height > 200' -o .\tmp\val_over_annotation_0.json
+```
+
 ## dumpid.py
 
 ```

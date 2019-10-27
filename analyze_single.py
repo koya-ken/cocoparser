@@ -20,6 +20,7 @@ def main():
     args = getargs()
     with coco.coco(args.inputfile) as data:
         image_ids = data.np_images[:, Image.ID]
+        annotation_count_per_image = data.np_images[:, Image.ANNOTATION_COUNT]
         annotation_ids = data.np_annotations[:, Annotation.ID]
         annotated_images = set(data.np_annotations[:, Annotation.IMAGE_ID])
         image_widths = data.np_images[:, Image.WIDTH]
@@ -28,6 +29,9 @@ def main():
         print('annotated image count:', len(annotated_images))
         print('annotation count:', len(annotation_ids))
         print('image id max:', max(image_ids))
+        print('annotation count max:', max(annotation_count_per_image))
+        print('annotation count min:', min(annotation_count_per_image))
+        print('annotation count ave:', np.mean(annotation_count_per_image))
         print('annotation id max:', max(annotation_ids))
         print('image width max:', max(image_widths))
         print('image height max:', max(image_heights))

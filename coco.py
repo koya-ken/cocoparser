@@ -8,12 +8,14 @@ import numpy as np
 import gc
 from enum import IntEnum
 import copy
+import collections
 
 
 class Image(IntEnum):
     ID = 0
     WIDTH = 1
     HEIGHT = 2
+    ANNOTATION_COUNT = 3
 
 
 class Annotation(IntEnum):
@@ -95,6 +97,7 @@ class ReplaceDict(object):
 
 class coco(object):
     NP_IMAGE_KEYS = ['id', 'width', 'height']
+    APPEND_IMAGE_KEYS = ['annotation_count']
     NP_ANNOTATION_KEYS = ['id', 'image_id', 'num_keypoints', 'iscrowd']
 
     def __init__(self, filename, fast=True, loadonly=False, fromfile=True, data=None, needcopy=False):
@@ -417,13 +420,14 @@ class coco(object):
     def filter(self, exp):
         width = self.np_images[:, [Image.WIDTH]]
         height = self.np_images[:, [Image.HEIGHT]]
+        annotation_count = self.np_images[:, [Image.ANNOTATION_COUNT]]
         image_id = self.np_annotations[:, [Annotation.IMAGE_ID]]
         iscrowd = self.np_annotations[:, [Annotation.ISCROWD]]
         num_keypoints = self.np_annotations[:, [Annotation.NUM_KEYPOINTS]]
 
         is_image_exp = False
         is_annotation_exp = False
-        for i in self.NP_IMAGE_KEYS:
+        for i in self.NP_IMAGE_KEYS + self.APPEND_IMAGE_KEYS:
             is_image_exp |= f'{i} ' in exp
         for i in self.NP_ANNOTATION_KEYS:
             is_annotation_exp |= f'{i} ' in exp
@@ -431,7 +435,10 @@ class coco(object):
         assert is_image_exp ^ is_annotation_exp, 'invalid filter'
 
         if is_image_exp:
-            matched = self.np_images[np.all(eval(exp), axis=1)][:, Image.ID]
+            exe = eval(exp)
+            slice_id = np.all(exe, axis=0 if type(exe) is tuple else 1)
+            slice_id = slice_id.flatten()
+            matched = self.np_images[slice_id][:, Image.ID]
             assert len(matched) > 0, 'no match filter'
             return self & ImageId(matched)
         else:
@@ -484,14 +491,6 @@ class coco(object):
     def __parse(self, data, copydata=False):
         if copydata:
             data = json.loads(json.dumps(data))
-        np_image_keys = self.NP_IMAGE_KEYS
-        np_images = self.genarray(len(np_image_keys), 10000)
-        self.images = {}
-        for image in data['images']:
-            self.images[image['id']] = image
-            np_image = [image[x] for x in np_image_keys]
-            np_images.update(np_image)
-        self.np_images = np_images.finalize()
 
         np_annotation_keys = self.NP_ANNOTATION_KEYS
         np_annotations = self.genarray(len(np_annotation_keys), 10000)
@@ -501,6 +500,21 @@ class coco(object):
             np_annotation = [annotation[x] for x in np_annotation_keys]
             np_annotations.update(np_annotation)
         self.np_annotations = np_annotations.finalize()
+
+        np_image_keys = self.NP_IMAGE_KEYS
+        np_images = self.genarray(len(np_image_keys) + 1, 10000)
+        self.images = {}
+        image_id_array = self.np_annotations[:, Annotation.IMAGE_ID]
+        count_image_id = collections.Counter(image_id_array)
+        for image in data['images']:
+            id = image['id']
+            self.images[id] = image
+            np_image = [image[x] for x in np_image_keys]
+            count = count_image_id.get(id, 0)
+            np_image += [count]
+            np_images.update(np_image)
+        self.np_images = np_images.finalize()
+
         self.data = data
 
     def __enter__(self):
