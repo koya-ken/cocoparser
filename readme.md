@@ -9,13 +9,13 @@ conda install -c anaconda msgpack-python
 ## analyze.py
 
 ```
-python .\analyze2.py .\person_keypoints_val2017.msgpack
+python .\analyze_plot.py .\person_keypoints_val2017.msgpack
 ```
 
 ## analyze2.py
 
 ```
-python .\analyze2.py .\person_keypoints_val2017.msgpack
+python .\analyze_single.py .\person_keypoints_val2017.msgpack
 ```
 
 ## filter_imagecount.py
