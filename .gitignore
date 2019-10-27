@@ -1,2 +1,3 @@
+__pycache__/
 person_keypoints_train2017.json
 person_keypoints_train2017.msgpack

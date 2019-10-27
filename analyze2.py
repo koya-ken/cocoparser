@@ -19,11 +19,22 @@ def getargs():
 def main():
     args = getargs()
     with coco.coco(args.inputfile) as data:
-        print('image count:', len(data.np_images[:, Image.ID]))
-        print('annotation count:', len(data.np_annotations[:, Annotation.ID]))
-        print('image ids', data.np_images[:, Image.ID])
-        print('annotation ids', data.np_annotations[:, Annotation.ID])
-
+        image_ids = data.np_images[:, Image.ID]
+        annotation_ids = data.np_annotations[:, Annotation.ID]
+        annotated_images = set(data.np_annotations[:, Annotation.IMAGE_ID])
+        image_widths = data.np_images[:, Image.WIDTH]
+        image_heights = data.np_images[:, Image.HEIGHT]
+        print('image count:', len(image_ids))
+        print('annotated image count:', len(annotated_images))
+        print('annotation count:', len(annotation_ids))
+        print('image id max:', max(image_ids))
+        print('annotation id max:', max(annotation_ids))
+        print('image width max:', max(image_widths))
+        print('image height max:', max(image_heights))
+        print('image width min:', min(image_widths))
+        print('image height min:', min(image_heights))
+        print('image width ave:', np.mean(image_widths))
+        print('image height ave:', np.mean(image_heights))
 
 if __name__ == "__main__":
     main()
