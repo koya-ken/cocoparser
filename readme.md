@@ -77,3 +77,10 @@ python .\dumpid.py .\tmp\merged.json -o .\tmp\annotation_ids.txt --annotation
 ```
 python .\dumpid.py .\tmp\merged.json -o - --annotation
 ```
+
+
+## intersection_id.py
+
+```
+python .\intersection_id.py .\person_keypoints_val2017.msgpack .\tmp\dumpids.txt
+```
