@@ -23,10 +23,10 @@ def main():
         end_time = int(round(time.time() * 1000))
         print(f'finish load {end_time-begin_time} ms', flush=True)
         all_ids = data.np_annotations[:, Annotation.ID]
-        filterd_ids = all_ids[args.start:args.start + args.count]
+        filtered_ids = all_ids[args.start:args.start + args.count]
         print('begin filter')
         begin_time = int(round(time.time() * 1000))
-        c2 = data & AnnotationId(filterd_ids)
+        c2 = data & AnnotationId(filtered_ids)
         end_time = int(round(time.time() * 1000))
         print(f'finish filter {end_time-begin_time} ms', flush=True)
         c2.save(args.outputfile)
