@@ -63,7 +63,7 @@ class FastArray:
 
 class CocoId(object):
     def __init__(self, ids):
-        self.ids = ids
+        self.ids = list(ids)
         pass
 
     def __len__(self):
