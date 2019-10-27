@@ -60,6 +60,10 @@ python .\filter.py .\tmp\merged.json -f 'num_keypoints > 15' -o .\tmp\over_keypo
 python .\filter.py .\person_keypoints_val2017.json -f 'annotation_count < 5, width > 200 , height > 200' -o .\tmp\val_over_annotation_0.json
 ```
 
+```
+python .\filter.py .\person_keypoints_val2017.json -f 'annotation_count < 5, width > 200 , height > 200 , annotation_count > 0' -f 'num_keypoints > 10' -o .\tmp\val_over_annotation_0.json
+```
+
 ## dumpid.py
 
 ```
